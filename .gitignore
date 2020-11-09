@@ -28,3 +28,5 @@ __pycache__
 # .idea
 .idea
 .idea/*
+
+react-flask-app-plants.iml
