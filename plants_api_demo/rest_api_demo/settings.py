@@ -1,6 +1,6 @@
 
 # Flask settings
-FLASK_SERVER_NAME = 'ec2-15-236-208-202.eu-west-3.compute.amazonaws.com:5000'
+FLASK_SERVER_NAME = 'ec2-15-236-208-202.eu-west-3.compute.amazonaws.com'
 FLASK_DEBUG = True  # False debug mode in production
 
 
