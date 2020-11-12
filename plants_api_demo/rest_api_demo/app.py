@@ -11,7 +11,7 @@ from flask.helpers import get_env
 from flask_cors import CORS, cross_origin
 from flask_restx import Api
 
-from flask_restplus.apidoc import apidoc
+from flask_restx.apidoc import apidoc
 
 URL_PREFIX = '/api'
 apidoc.url_prefix = URL_PREFIX
