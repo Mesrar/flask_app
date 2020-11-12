@@ -9,7 +9,7 @@ from api.plants.endpoints.imageapi import ns as imgapi_namespace
 from api.restplus import api
 from flask.helpers import get_env
 from flask_cors import CORS, cross_origin
-from flask_restplus import Api
+from flask_restx import Api
 
 from flask_restplus.apidoc import apidoc
 
