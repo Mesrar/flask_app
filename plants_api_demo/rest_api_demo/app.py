@@ -14,7 +14,7 @@ from flask_cors import CORS, cross_origin
 app = Flask(__name__, static_folder="../build", static_url_path="/")
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-cors = CORS(app, resources={r"/api/": {"origins": "*"}})
+CORS(app, resources={r"/api/*": {"origins": "*"}}, headers='Content-Type')
 
 app.config['MONGOALCHEMY_DATABASE'] = 'library'
 
