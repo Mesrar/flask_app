@@ -24,6 +24,7 @@ logging_conf_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..
 logging.config.fileConfig(logging_conf_path)
 log = logging.getLogger(__name__)
 
+logging.getLogger('flask_cors').level = logging.DEBUG
 
 @app.route('/')
 def index():
