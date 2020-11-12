@@ -8,13 +8,13 @@ from api.plants.endpoints.plants import ns as plants_namespace
 from api.plants.endpoints.imageapi import ns as imgapi_namespace
 from api.restplus import api
 from flask.helpers import get_env
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 
 
 app = Flask(__name__, static_folder="../build", static_url_path="/")
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-cors = CORS(app, resources={r"/api": {"origins": "http://localhost:5000"}})
+cors = CORS(app, resources={r"/api/": {"origins": "*"}})
 
 app.config['MONGOALCHEMY_DATABASE'] = 'library'
 
