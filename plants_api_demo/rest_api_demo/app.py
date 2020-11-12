@@ -14,6 +14,8 @@ from flask_cors import CORS
 app = Flask(__name__, static_folder="../build", static_url_path="/")
 app.config['CORS_HEADERS'] = 'Content-Type'
 
+cors = CORS(app, resources={r"/api": {"origins": "http://localhost:5000"}})
+
 app.config['MONGOALCHEMY_DATABASE'] = 'library'
 
 logging_conf_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '../logging.conf'))
