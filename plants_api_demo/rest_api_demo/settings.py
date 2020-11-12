@@ -1,5 +1,6 @@
+
 # Flask settings
-FLASK_SERVER_NAME = 'localhost:8888'
+FLASK_SERVER_NAME = '0.0.0.0:5000'
 FLASK_DEBUG = True  # False debug mode in production
 
 # Flask-Restplus settings

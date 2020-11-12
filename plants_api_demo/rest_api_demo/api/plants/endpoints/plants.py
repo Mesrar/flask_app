@@ -5,7 +5,7 @@ from flask_restx import Resource
 from api.restplus import api
 import time
 import pandas as pd
-from rest_api_demo import settings
+import settings
 
 log = logging.getLogger(__name__)
 
@@ -28,8 +28,7 @@ class ApiPlants(metaclass=Singleton):
 
     def __init__(self):
         print("init")  # never prints
-        self.df_plants = pd.read_excel(open(settings.EXCEL_DATA_EGRID_URI, 'rb'), sheet_name='PLNT16',
-                                       index_col=settings.EXCEL_DATA_COL_INDEX_NAME, header=1)
+        self.df_plants = pd.read_excel(open(settings.EXCEL_DATA_EGRID_URI, 'rb'), sheet_name='PLNT16', header=1)
 
 
 def load_excel():
@@ -81,8 +80,6 @@ class TOPPlaints(Resource):
                 ApiPlants.search_key_defaults["sort_by"] = request.args.get('sort_by')
             if request.args.get('cols'):
                 ApiPlants.search_key_defaults["cols"] = request.args.get('cols').split(",")
-            else:  # if no cols arg show the one sorted by
-                ApiPlants.search_key_defaults["cols"] = ApiPlants.search_key_defaults["sort_by"]
 
         df_sorted = \
             df_plants.sort_values(by=ApiPlants.search_key_defaults["sort_by"], ascending=False, na_position='last')[

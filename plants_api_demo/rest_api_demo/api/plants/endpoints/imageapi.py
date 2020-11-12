@@ -2,17 +2,21 @@ import logging
 from flask import Flask, jsonify
 from flask import request, jsonify
 from flask_restx import Resource
-from rest_api_demo.api.restplus import api
+from api.restplus import api
 import time
 import pandas as pd
 from pymongo import MongoClient
-from rest_api_demo import settings
+import settings
 
 log = logging.getLogger(__name__)
 
 ns = api.namespace('image', description='Operations related plants')
 
-client = MongoClient()
+client = MongoClient(host='img_mongodb',
+                     port=27017,
+                     username='root',
+                     password='pass',
+                     authSource="admin")
 mydb = client['imgdb']
 collection = mydb['img_150']
 

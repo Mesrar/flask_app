@@ -10,6 +10,8 @@ api = Api(version='1.0', title='Plants API DEMO',
           description='Plants API DEMO with Flask RestPlus powered API')
 
 
+
+
 @api.errorhandler
 def default_error_handler(e):
     message = 'An unhandled exception occurred.'
