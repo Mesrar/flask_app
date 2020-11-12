@@ -9,12 +9,16 @@ from api.plants.endpoints.imageapi import ns as imgapi_namespace
 from api.restplus import api
 from flask.helpers import get_env
 from flask_cors import CORS, cross_origin
+from flask_restplus import Api
+
+from flask_restplus.apidoc import apidoc
+
+URL_PREFIX = '/api'
+apidoc.url_prefix = URL_PREFIX
 
 
 app = Flask(__name__, static_folder="../build", static_url_path="/")
-app.config['CORS_HEADERS'] = 'Content-Type'
 
-CORS(app, resources={r"/api/*": {"origins": "*"}}, headers='Content-Type')
 
 app.config['MONGOALCHEMY_DATABASE'] = 'library'
 
@@ -40,8 +44,10 @@ def configure_app(flask_app):
 def initialize_app(flask_app):
     configure_app(flask_app)
 
-    blueprint = Blueprint('api', __name__, url_prefix='/api')
-    api.init_app(blueprint)
+    blueprint = Blueprint('api', 'blueprint_name', url_prefix=URL_PREFIX)
+    api = Api(blueprint, doc='/doc/')
+    app.register_blueprint(blueprint)
+
     api.add_namespace(plants_namespace)
     api.add_namespace(imgapi_namespace)
     flask_app.register_blueprint(blueprint)
