@@ -2,7 +2,7 @@ import logging
 from flask import Flask, jsonify
 from flask import request, jsonify
 from flask_restx import Resource
-from api.restplus import api
+from rest_api_demo.api.restplus import api
 import time
 import pandas as pd
 from pymongo import MongoClient
@@ -43,7 +43,7 @@ class get_frm_by_depth_min_max(Resource):
 
         print(float(depth_max), float(depth_min))
         query = {'depth': {"$lt": float(depth_max), "$gt": float(depth_min)}}
-        result = collection.find(query, {'depth': 1, '_id': 0})
-        df = pd.DataFrame(list(result), dtype=float)
+        result = collection.find(query, {'_id': 0})
+        df = pd.DataFrame(list(result))
 
         return df.to_json()

@@ -6,17 +6,10 @@ from api.restplus import api
 import time
 import pandas as pd
 from rest_api_demo import settings
-import geopandas
-from shapely.geometry import Point
-import numpy as np
-
-from math import radians, cos, sin, asin, sqrt
 
 log = logging.getLogger(__name__)
 
 ns = api.namespace('plants', description='Operations related plants')
-
-import os
 
 
 class Singleton(type):
@@ -78,9 +71,6 @@ class PlaintsByState(Resource):
 @ns.route('/', methods=['GET'])
 @api.doc(params={'top': '<int:top>', 'sort_by': 'col code default : PLNGENAN', 'cols': 'cols code to show'})
 class TOPPlaints(Resource):
-
-    def __init__(self):
-        self.df_plants = load_excel().df_plants
 
     def get(self):
         df_plants = load_excel().df_plants
