@@ -30,3 +30,5 @@ __pycache__
 .idea/*
 
 react-flask-app-plants.iml
+
+Pipfile
