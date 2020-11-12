@@ -16,9 +16,7 @@ from flask_restx.apidoc import apidoc
 URL_PREFIX = '/api'
 apidoc.url_prefix = URL_PREFIX
 
-
 app = Flask(__name__, static_folder="../build", static_url_path="/")
-
 
 app.config['MONGOALCHEMY_DATABASE'] = 'library'
 
@@ -31,6 +29,7 @@ log = logging.getLogger(__name__)
 def index():
     print(">>>>>>>>>>>> test")
     return app.send_static_file('index.html')
+
 
 def configure_app(flask_app):
     flask_app.config['SERVER_NAME'] = settings.FLASK_SERVER_NAME
@@ -50,7 +49,6 @@ def initialize_app(flask_app):
 
     api.add_namespace(plants_namespace)
     api.add_namespace(imgapi_namespace)
-    flask_app.register_blueprint(blueprint)
 
 
 def main():
