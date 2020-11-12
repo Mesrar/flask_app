@@ -8,8 +8,11 @@ from api.plants.endpoints.plants import ns as plants_namespace
 from api.plants.endpoints.imageapi import ns as imgapi_namespace
 from api.restplus import api
 from flask.helpers import get_env
+from flask_cors import CORS
+
 
 app = Flask(__name__, static_folder="../build", static_url_path="/")
+CORS(app)
 app.config['MONGOALCHEMY_DATABASE'] = 'library'
 
 logging_conf_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '../logging.conf'))
