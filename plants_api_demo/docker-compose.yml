@@ -4,8 +4,6 @@ app:
 
   ports:
     - "5000:5000"
-  expose:
-    - '5000'
   volumes:
     - .:/rest_api_demo
   links:
