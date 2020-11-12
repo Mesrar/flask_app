@@ -2,4 +2,4 @@ build:
   docker:
     web: plants_api_demo/Dockerfile
 run:
-  web: bundle exec puma -C config/puma.rb
+  web: docker-compose up
