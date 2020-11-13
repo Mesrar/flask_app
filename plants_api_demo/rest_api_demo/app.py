@@ -17,14 +17,25 @@ URL_PREFIX = '/api'
 apidoc.url_prefix = URL_PREFIX
 
 app = Flask(__name__, static_folder="../build", static_url_path="/")
-CORS(app)
+CORS(app, allow_headers=['Content-Type', 'Access-Control-Allow-Origin',
+                         'Access-Control-Allow-Headers', 'Access-Control-Allow-Methods'])
+
 app.config['MONGOALCHEMY_DATABASE'] = 'library'
 
 logging_conf_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '../logging.conf'))
 logging.config.fileConfig(logging_conf_path)
 log = logging.getLogger(__name__)
 
-logging.getLogger('flask_cors').level = logging.DEBUG
+
+@app.after_request
+def apply_caching(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+    response.headers["Access-Control-Allow-Methods"] = "GET,HEAD,OPTIONS,POST,PUT"
+    response.headers["Access-Control-Allow-Headers"] = \
+        "Access-Control-Allow-Headers,  Access-Control-Allow-Origin, Origin,Accept, " + \
+        "X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
+    return response
 
 @app.route('/')
 def index():
