@@ -67,7 +67,7 @@ def main():
     initialize_app(app)
     log.info('>>>>> Starting development server at http://{}/api/ <<<<<'.format(app.config['SERVER_NAME']))
     if get_env() == 'production':
-        app.run(debug=False)
+        app.run(host='0.0.0.0', port=5000, debug=False)
     else:
         app.run(debug=settings.FLASK_DEBUG)
 
