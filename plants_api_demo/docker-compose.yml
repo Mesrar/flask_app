@@ -24,4 +24,3 @@ nginx:
   environment:
     - SERVER_NAME=15.236.208.202
   restart: always
-  network_mode: host
