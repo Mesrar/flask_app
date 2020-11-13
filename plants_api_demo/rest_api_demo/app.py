@@ -33,7 +33,7 @@ def index():
 
 
 def configure_app(flask_app):
-    flask_app.config['SERVER_NAME'] = settings.FLASK_SERVER_NAME
+    #flask_app.config['SERVER_NAME'] = settings.FLASK_SERVER_NAME
     flask_app.config['flask_env'] = get_env()
     flask_app.config['SWAGGER_UI_DOC_EXPANSION'] = settings.RESTPLUS_SWAGGER_UI_DOC_EXPANSION
     flask_app.config['RESTPLUS_VALIDATE'] = settings.RESTPLUS_VALIDATE
