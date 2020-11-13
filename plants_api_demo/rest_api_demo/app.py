@@ -8,7 +8,6 @@ from api.plants.endpoints.plants import ns as plants_namespace
 from api.plants.endpoints.imageapi import ns as imgapi_namespace
 from api.restplus import api
 from flask.helpers import get_env
-from flask_cors import CORS, cross_origin
 from flask_restx import Api
 
 from flask_restx.apidoc import apidoc
@@ -17,14 +16,44 @@ URL_PREFIX = '/api'
 apidoc.url_prefix = URL_PREFIX
 
 app = Flask(__name__, static_folder="../build", static_url_path="/")
-CORS(app, allow_headers=['Content-Type', 'Access-Control-Allow-Origin',
-                         'Access-Control-Allow-Headers', 'Access-Control-Allow-Methods'])
+
 
 app.config['MONGOALCHEMY_DATABASE'] = 'library'
 
 logging_conf_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '../logging.conf'))
 logging.config.fileConfig(logging_conf_path)
 log = logging.getLogger(__name__)
+
+
+try:
+    from flask_cors import CORS  # The typical way to import flask-cors
+except ImportError:
+    # Path hack allows examples to be run without installation.
+    import os
+    parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    os.sys.path.insert(0, parentdir)
+from flask_cors import CORS
+
+public_routes = Blueprint('public', __name__)
+
+
+@public_routes.route("/api/*")
+def helloWorld():
+    '''
+        Since the path '/' does not match the regular expression r'/api/*',
+        this route does not have CORS headers set.
+    '''
+    return '''<h1>Hello CORS!</h1> Read about my spec at the
+<a href="http://www.w3.org/TR/cors/">W3</a> Or, checkout my documentation
+on <a href="https://github.com/corydolphin/flask-cors">Github</a>'''
+
+
+api_v1 = Blueprint('API_v1', __name__)
+
+logging.basicConfig(level=logging.INFO)
+app = Flask('FlaskCorsBlueprintBasedExample')
+app.register_blueprint(api_v1)
+app.register_blueprint(public_routes)
 
 
 @app.after_request
@@ -36,6 +65,7 @@ def apply_caching(response):
         "Access-Control-Allow-Headers,  Access-Control-Allow-Origin, Origin,Accept, " + \
         "X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
     return response
+
 
 @app.route('/')
 def index():
@@ -54,10 +84,6 @@ def configure_app(flask_app):
 
 def initialize_app(flask_app):
     configure_app(flask_app)
-
-    blueprint = Blueprint('api', 'blueprint_name', url_prefix=URL_PREFIX)
-    api = Api(blueprint, doc='/doc/')
-    app.register_blueprint(blueprint)
 
     api.add_namespace(plants_namespace)
     api.add_namespace(imgapi_namespace)
