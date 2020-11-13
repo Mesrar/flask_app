@@ -1,7 +1,8 @@
 app:
   build: .
   command: python3 rest_api_demo/app.py
-
+  container_name: flaskapp
+  network_mode: host
   ports:
     - "5000:5000"
   volumes:
@@ -16,3 +17,11 @@ db:
     - MONGO_INITDB_ROOT_PASSWORD=pass
   ports:
     - 27017:27017
+
+nginx:
+  build: ./nginx
+  container_name: nginx
+  environment:
+    - SERVER_NAME=0.0.0.0
+  restart: always
+  network_mode: host
