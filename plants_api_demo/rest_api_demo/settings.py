@@ -1,6 +1,6 @@
 
 # Flask settings
-
+FLASK_SERVER_NAME = '15.236.208.202:5000'
 FLASK_DEBUG = True  # False debug mode in production
 
 
