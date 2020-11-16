@@ -1,13 +1,10 @@
 import logging
 
-from flask_restx import Api
 import settings
 
 
 log = logging.getLogger(__name__)
 
-api = Api(version='1.0', title='Plants API DEMO',
-          description='Plants API DEMO with Flask RestPlus powered API')
 
 
 

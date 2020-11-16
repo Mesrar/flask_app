@@ -14,8 +14,6 @@ from flask_restx import Api
 import api.plants.endpoints.plants as plants
 from flask_restx.apidoc import apidoc
 
-
-
 URL_PREFIX = '/api'
 apidoc.url_prefix = URL_PREFIX
 
@@ -40,9 +38,19 @@ def apply_caching(response):
         "X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
     return response
 
+
 @app.route('/')
 def index():
     return app.send_static_file('index.html')
+
+
+blueprint = Blueprint('api', __name__, url_prefix='/api')
+api = Api(blueprint, ui=False)
+
+
+@blueprint.route('/doc/', endpoint='doc')
+def swagger_ui():
+    return apidoc.ui_for(api)
 
 
 def configure_app(flask_app):
