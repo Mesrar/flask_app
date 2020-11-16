@@ -11,7 +11,10 @@ from flask.helpers import get_env
 from flask_cors import CORS, cross_origin
 from flask_restx import Api
 
+import api.plants.endpoints.plants as plants
 from flask_restx.apidoc import apidoc
+
+
 
 URL_PREFIX = '/api'
 apidoc.url_prefix = URL_PREFIX
@@ -39,7 +42,6 @@ def apply_caching(response):
 
 @app.route('/')
 def index():
-    print(">>>>>>>>>>>> test")
     return app.send_static_file('index.html')
 
 
@@ -62,6 +64,7 @@ def initialize_app(flask_app):
 
     api.add_namespace(plants_namespace)
     api.add_namespace(imgapi_namespace)
+    plants.load_excel()
 
 
 def main():
