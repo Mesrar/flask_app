@@ -18,9 +18,7 @@ URL_PREFIX = '/api'
 apidoc.url_prefix = URL_PREFIX
 
 app = Flask(__name__, static_folder="../build", static_url_path="/")
-CORS(app, allow_headers=['Content-Type', 'Access-Control-Allow-Origin',
-                         'Access-Control-Allow-Headers', 'Access-Control-Allow-Methods'])
-
+CORS(app, resources=r'/api/*')
 app.config['MONGOALCHEMY_DATABASE'] = 'library'
 
 logging_conf_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '../logging.conf'))
@@ -28,26 +26,10 @@ logging.config.fileConfig(logging_conf_path)
 log = logging.getLogger(__name__)
 
 
-@app.after_request
-def apply_caching(response):
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Credentials"] = "true"
-    response.headers["Access-Control-Allow-Methods"] = "GET,HEAD,OPTIONS,POST,PUT"
-    response.headers["Access-Control-Allow-Headers"] = \
-        "Access-Control-Allow-Headers,  Access-Control-Allow-Origin, Origin,Accept, " + \
-        "X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
-    return response
-
-
 @app.route('/')
 def index():
-    return app.send_static_file('static_swagger/swaggerui.html')
-
-
-@app.route('/api/docs')
-def get_docs():
-    print('sending docs')
-    return app.send_static_file('static_swagger/swaggerui.html')
+    print(">>>>>>>>>>>> test")
+    return app.send_static_file('index.html')
 
 
 def configure_app(flask_app):
@@ -57,7 +39,6 @@ def configure_app(flask_app):
     flask_app.config['RESTPLUS_VALIDATE'] = settings.RESTPLUS_VALIDATE
     flask_app.config['RESTPLUS_MASK_SWAGGER'] = settings.RESTPLUS_MASK_SWAGGER
     flask_app.config['ERROR_404_HELP'] = settings.RESTPLUS_ERROR_404_HELP
-    flask_app.config['CORS_HEADERS'] = '*';
 
 
 def initialize_app(flask_app):
@@ -74,7 +55,6 @@ def initialize_app(flask_app):
 
 def main():
     initialize_app(app)
-
     log.info('>>>>> Starting development server at http://{}/api/ <<<<<'.format(app.config['SERVER_NAME']))
     app.run(debug=settings.FLASK_DEBUG)
 
