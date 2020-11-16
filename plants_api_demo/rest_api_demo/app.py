@@ -41,7 +41,7 @@ def apply_caching(response):
 
 @app.route('/')
 def index():
-    return app.send_static_file('index.html')
+    return app.send_static_file('static_swagger/swaggerui.html')
 
 
 @app.route('/api/docs')
