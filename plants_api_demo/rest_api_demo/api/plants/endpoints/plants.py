@@ -6,6 +6,9 @@ from api.restplus import api
 import time
 import pandas as pd
 import settings
+import geopandas as gpd
+from shapely.geometry import Point, Polygon
+import json
 
 log = logging.getLogger(__name__)
 
@@ -35,35 +38,51 @@ def load_excel():
     return ApiPlants()
 
 
+def set_default(obj):
+    if isinstance(obj, set):
+        return list(obj)
+    raise TypeError
+
+
 @ns.route('/<state_code>')
-@api.doc(params={'state_code': 'TX/tx/Tx/tX', 'p1': '', 'p2': ''})
+@api.doc(params={'state_code': 'TX/tx/Tx/tX', 'p1_lat': '', 'p1_lon': '', 'p2_lat': '', 'p2_lon': ''})
 @api.response(404, 'plants not found.')
 class PlaintsByState(Resource):
 
     def get(self, state_code):
         start = time.time()
         df_plants = load_excel().df_plants
-        df_plants_info = df_plants[df_plants.PSTATABB.str.contains(state_code, case=False)]
-        df_plants['LON'] = df_plants['LON'].astype(float)
-        df_plants['LAT'] = df_plants['LAT'].astype(float)
+        pl_by_state_df = df_plants.groupby("PSTATABB")
+        result = pl_by_state_df.get_group(state_code.upper())
+        # state point
+        states_filter = gpd.GeoDataFrame(result, geometry=gpd.points_from_xy(result.LON, result.LAT))
+        # glob point geo frame
+        states = gpd.GeoDataFrame(df_plants, geometry=gpd.points_from_xy(df_plants.LON, df_plants.LAT))
 
-        plt_percentage = len(df_plants[df_plants.PSTATABB.str.contains(state_code, case=False)]) / \
-                         len(df_plants)
+        percentage = result["PSTATABB"].count() / len(df_plants)
+        plants_number = result["PSTATABB"].count()
 
         if request.args:
-            if request.args.get('p1'):
-                lat = request.args.get('p1')
+            if request.args.get('p1_lat') and request.args.get('p1_lon'):
+                lat_first_p = float(request.args.get('p1_lat'))
+                lon_first_p = float(request.args.get('p1_lon'))
 
-            if request.args.get('p2'):
-                lon = request.args.get('p2')
+            if request.args.get('p2_lon') and request.args.get('p2_lat'):
+                lat_second_p = float(request.args.get('p1_lat'))
+                lon_second_p = float(request.args.get('p1_lon'))
 
-            df_plant_zoom = df_plants_info.loc[
-                (df_plants["LON"] == float(lon)) & (df_plants["LAT"] == float(lat))]
+                p1 = Point(lat_first_p, lon_first_p)
+                p2 = Point(lat_second_p, lon_second_p)
+                points = gpd.GeoDataFrame(geometry=[p1, p2])
+                points.set_crs(epsg=4326, inplace=True)
+                points = points.to_crs("EPSG:3395")
+                result_gdf = gpd.sjoin(points, states_filter, how="inner", op='intersects')
+                print(">>>>>>>>>>>>>><", result_gdf)
 
-            return df_plant_zoom.to_json()
+                return result_gdf.to_json()
 
-        plants_data_info = {'abs_value': len(df_plants_info), "percent": "{:.2%}".format(plt_percentage),
-                            "response_time": "{}s".format(time.time() - start)}
+        plants_data_info = {'abs_value': int(plants_number), "percent": "{:.2%}".format(percentage)}
+
         return jsonify(plants_data_info)
 
 
