@@ -44,13 +44,10 @@ def index():
     return app.send_static_file('index.html')
 
 
-blueprint = Blueprint('api', __name__, url_prefix='/api')
-api = Api(blueprint, ui=False)
-
-
-@blueprint.route('/doc/', endpoint='doc')
-def swagger_ui():
-    return apidoc.ui_for(api)
+@app.route('/api/docs')
+def get_docs():
+    print('sending docs')
+    return app.send_static_file('static_swagger/swaggerui.html')
 
 
 def configure_app(flask_app):
