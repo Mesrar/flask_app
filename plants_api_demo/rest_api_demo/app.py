@@ -64,7 +64,7 @@ def swagger():
     return render_template("swagger-ui.html", title=api.title, specs_url=api.specs_url)
 
 
-@app.route('/swagger.json', methods=['GET'])
+@app.route('static/swagger.json', methods=['GET'])
 def index():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'swagger.json')
