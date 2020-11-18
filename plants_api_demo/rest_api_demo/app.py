@@ -60,11 +60,11 @@ def swagger_static(filename):
     return url_for("app_doc.static", filename='static_swagger/bower/swagger-ui/dist/{0}'.format(filename))
 
 
-@app.route('/swaggerui', methods=['GET'])
+@app.route('/api/swagger.json', methods=['GET'])
 def swagger():
-    print("test", os.path.join(app.root_path, 'static/static_swagger/bower/swagger-ui/dist/'))
-
-    return render_template("swagger-ui.html", title=api.title, specs_url=api.specs_url)
+    
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'swagger.json')
 
 
 @app.route('/', methods=['GET'])
