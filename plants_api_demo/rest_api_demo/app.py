@@ -23,22 +23,12 @@ logging.config.fileConfig(logging_conf_path)
 log = logging.getLogger(__name__)
 app.config['MONGOALCHEMY_DATABASE'] = 'library'
 
-CORS(app, resources=r'/swagger/*')
-
+CORS(app, resources=r'/swaggerui/*')
+CORS(app, resources=r'/api/*')
 ### swagger specific ###
+
 SWAGGER_URL = '/api/docs'
 API_URL = 'http://petstore.swagger.io/v2/swagger.json'
-SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
-    SWAGGER_URL,
-    API_URL,
-    config={
-        'app_name': "Python-Flask-REST"
-    }
-)
-
-### end swagger specific ###
-
-
 apidoc = Apidoc(
     "app_doc",
     __name__,
@@ -47,6 +37,10 @@ apidoc = Apidoc(
     static_url_path="/swaggerui",
 )
 api = Api(apidoc)
+
+### end swagger specific ###
+
+
 
 
 @app.route('/favicon.ico', methods=['GET'])
