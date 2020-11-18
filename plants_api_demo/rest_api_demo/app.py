@@ -59,10 +59,10 @@ def favicon():
                                mimetype='image/vnd.microsoft.icon')
 
 
-@app.route('/static/swagger.json', methods=['GET'])
+@app.route('/api/swagger.json', methods=['GET'])
 def swagger():
+    print("test")
     return send_from_directory(os.path.join(app.root_path, 'static'), 'swagger.json')
-
 
 
 @app.route('/', methods=['GET'])
@@ -81,14 +81,17 @@ def configure_app(flask_app):
     flask_app.config['ERROR_404_HELP'] = settings.RESTPLUS_ERROR_404_HELP
 
 
+URL_PREFIX = '/api'
+apidoc.url_prefix = URL_PREFIX
+
+
 def initialize_app(flask_app):
     configure_app(flask_app)
-    api = Api(SWAGGERUI_BLUEPRINT)
-    app.register_blueprint(SWAGGERUI_BLUEPRINT)
+    blueprint = SWAGGERUI_BLUEPRINT
+    api = Api(blueprint)
     api.add_namespace(plants_namespace)
     api.add_namespace(image_namespace)
-    app.register_blueprint(plants.get_blueprint())
-    app.register_blueprint(imageapi.get_blueprint())
+    flask_app.register_blueprint(blueprint)
     # plants.load_excel()
 
 
