@@ -64,10 +64,6 @@ def swagger():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'swagger.json')
 
 
-@app.route('/swagger', methods=['GET'])
-def swaggerview():
-    return send_from_directory(os.path.join(app.root_path, 'static'), 'swagger.json')
-
 
 @app.route('/', methods=['GET'])
 def index():
