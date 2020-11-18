@@ -38,7 +38,7 @@ apidoc = Apidoc(
 
 )
 api = Api(apidoc)
-URL_PREFIX = '/static'
+URL_PREFIX = '/static/swagger.json'
 apidoc.url_prefix = URL_PREFIX
 
 ### end swagger specific ###
@@ -59,8 +59,6 @@ def swagger_static(filename):
 
 @app.route('/swaggerui', methods=['GET'])
 def swagger():
-    print("test", os.path.join(app.root_path, 'static/static_swagger/bower/swagger-ui/dist/'))
-
     return render_template("swagger-ui.html", title=api.title, specs_url=api.specs_url)
 
 
