@@ -37,7 +37,7 @@ apidoc = Apidoc(
 
 )
 api = Api(apidoc)
-URL_PREFIX = '/static/swagger.json'
+URL_PREFIX = '/static'
 apidoc.url_prefix = URL_PREFIX
 
 ### end swagger specific ###
