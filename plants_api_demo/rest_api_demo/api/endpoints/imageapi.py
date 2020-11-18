@@ -1,7 +1,7 @@
 import logging
-from flask import request, jsonify
+from flask import request, jsonify, Blueprint
 from flask_restx import Resource
-from api.restplus import api
+
 import pandas as pd
 from pymongo import MongoClient
 import cv2
@@ -9,8 +9,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import json
+from flask_restx import Api
+from flask_restx.apidoc import apidoc
 
 log = logging.getLogger(__name__)
+
+REQUEST_API = Blueprint('image', __name__)
+
+api = Api(REQUEST_API)
 
 ns = api.namespace('image', description='Operations related plants')
 
@@ -23,6 +29,11 @@ mydb = client['imgdb_notebooks']
 collection = mydb['img']
 
 
+def get_blueprint():
+    """Return the blueprint for the main app module"""
+    return REQUEST_API
+
+
 def get_mpl_colormap(cmap_name):
     cmap = plt.get_cmap(cmap_name)
     sm = plt.cm.ScalarMappable(cmap=cmap)
@@ -30,7 +41,7 @@ def get_mpl_colormap(cmap_name):
     return color_range.reshape(256, 1, 3)
 
 
-@ns.route('/insert')
+@ns.route('/load_img_to_db', methods=['GET'])
 class LoadImgTODB(Resource):
 
     def get(self):
@@ -75,7 +86,7 @@ class NumpyEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
-@ns.route('/')
+@ns.route('/', methods=['GET'])
 @api.doc(params={'depth_min': '', 'depth_max': '', 'color_map': ''})
 class Depth(Resource):
 
@@ -108,7 +119,7 @@ class Depth(Resource):
             return json.dumps(img_json)
 
 
-@ns.route('/applyColorMap/')
+@ns.route('/applyColorMap/', methods=['GET'])
 @api.doc(params={'colors_map': ''})
 class ApplyColorMapToImg(Resource):
     _colors_map = 'bwr'

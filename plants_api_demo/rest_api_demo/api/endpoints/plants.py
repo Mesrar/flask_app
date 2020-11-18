@@ -1,16 +1,20 @@
 import logging
 from flask import Flask, jsonify
-from flask import request, jsonify
+from flask import request, jsonify, Blueprint
 from flask_restx import Resource
-from api.restplus import api
+
 import time
 import pandas as pd
 import settings
 import geopandas as gpd
 from shapely.geometry import Point, Polygon
-import json
+from flask_restx import Api
 
 log = logging.getLogger(__name__)
+
+REQUEST_API = Blueprint('plants', __name__)
+
+api = Api(REQUEST_API)
 
 ns = api.namespace('plants', description='Operations related plants')
 
@@ -44,9 +48,14 @@ def set_default(obj):
     raise TypeError
 
 
+def get_blueprint():
+    """Return the blueprint for the main app module"""
+    return REQUEST_API
+
+
+@REQUEST_API.route('/<state_code>', methods=['GET'])
 @ns.route('/<state_code>')
 @api.doc(params={'state_code': 'TX/tx/Tx/tX', 'p1_lat': '', 'p1_lon': '', 'p2_lat': '', 'p2_lon': ''})
-@api.response(404, 'plants not found.')
 class PlaintsByState(Resource):
 
     def get(self, state_code):
@@ -77,7 +86,6 @@ class PlaintsByState(Resource):
                 points.set_crs(epsg=4326, inplace=True)
                 points = points.to_crs("EPSG:3395")
                 result_gdf = gpd.sjoin(points, states_filter, how="inner", op='intersects')
-                print(">>>>>>>>>>>>>><", result_gdf)
 
                 return result_gdf.to_json()
 

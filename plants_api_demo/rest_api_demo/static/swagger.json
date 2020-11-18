@@ -1,0 +1,180 @@
+{
+  "swagger": "2.0",
+  "basePath": "/swagger",
+  "paths": {
+    "/image/": {
+      "parameters": [
+        {
+          "description": "",
+          "name": "depth_min",
+          "type": "string",
+          "in": "query"
+        },
+        {
+          "description": "",
+          "name": "depth_max",
+          "type": "string",
+          "in": "query"
+        },
+        {
+          "description": "",
+          "name": "color_map",
+          "type": "string",
+          "in": "query"
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "operationId": "get_depth",
+        "tags": [
+          "image"
+        ]
+      }
+    },
+    "/image/applyColorMap/": {
+      "parameters": [
+        {
+          "description": "",
+          "name": "colors_map",
+          "type": "string",
+          "in": "query"
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "operationId": "get_apply_color_map_to_img",
+        "tags": [
+          "image"
+        ]
+      }
+    },
+    "/image/load_img_to_db": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "operationId": "get_load_img_todb",
+        "tags": [
+          "image"
+        ]
+      }
+    },
+    "/plants/": {
+      "parameters": [
+        {
+          "description": "<int:top>",
+          "name": "top",
+          "type": "string",
+          "in": "query"
+        },
+        {
+          "description": "col code default : PLNGENAN",
+          "name": "sort_by",
+          "type": "string",
+          "in": "query"
+        },
+        {
+          "description": "cols code to show",
+          "name": "cols",
+          "type": "string",
+          "in": "query"
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "operationId": "get_top_plaints",
+        "tags": [
+          "plants"
+        ]
+      }
+    },
+    "/plants/{state_code}": {
+      "parameters": [
+        {
+          "description": "TX/tx/Tx/tX",
+          "name": "state_code",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "description": "",
+          "name": "p1_lat",
+          "type": "string",
+          "in": "query"
+        },
+        {
+          "description": "",
+          "name": "p1_lon",
+          "type": "string",
+          "in": "query"
+        },
+        {
+          "description": "",
+          "name": "p2_lat",
+          "type": "string",
+          "in": "query"
+        },
+        {
+          "description": "",
+          "name": "p2_lon",
+          "type": "string",
+          "in": "query"
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "operationId": "get_plaints_by_state",
+        "tags": [
+          "plants"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "API",
+    "version": "1.0"
+  },
+  "produces": [
+    "application/json"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "tags": [
+    {
+      "name": "plants",
+      "description": "Operations related plants"
+    },
+    {
+      "name": "image",
+      "description": "Operations related plants"
+    }
+  ],
+  "responses": {
+    "ParseError": {
+      "description": "When a mask can't be parsed"
+    },
+    "MaskError": {
+      "description": "When any error occurs on mask"
+    }
+  }
+}

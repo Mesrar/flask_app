@@ -1,12 +1,11 @@
 
-# Flask settings
-FLASK_SERVER_NAME = '0.0.0.0:5000'
+
 FLASK_DEBUG = True  # False debug mode in production
 
 
 RESTPLUS_SWAGGER_UI_DOC_EXPANSION = 'list'
 RESTPLUS_VALIDATE = True
-RESTPLUS_MASK_SWAGGER = False
+RESTPLUS_MASK_SWAGGER = True
 RESTPLUS_ERROR_404_HELP = False
 
 # excel file path
