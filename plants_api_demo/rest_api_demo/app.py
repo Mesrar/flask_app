@@ -59,7 +59,7 @@ def favicon():
                                mimetype='image/vnd.microsoft.icon')
 
 
-@app.route('/api/swagger.json', methods=['GET'])
+@app.route('/static/swagger.json', methods=['GET'])
 def swagger():
     print("test")
     return send_from_directory(os.path.join(app.root_path, 'static'), 'swagger.json')
