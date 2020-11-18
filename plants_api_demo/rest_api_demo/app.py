@@ -35,8 +35,11 @@ apidoc = Apidoc(
     template_folder="static/templates",
     static_folder="static",
     static_url_path="/swaggerui",
+
 )
 api = Api(apidoc)
+URL_PREFIX = '/static/swagger.json'
+apidoc.url_prefix = URL_PREFIX
 
 ### end swagger specific ###
 
@@ -61,7 +64,7 @@ def swagger():
     return render_template("swagger-ui.html", title=api.title, specs_url=api.specs_url)
 
 
-@app.route('/api/swagger.json', methods=['GET'])
+@app.route('/static/swagger.json', methods=['GET'])
 def index():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'swagger.json')
@@ -76,8 +79,7 @@ def configure_app(flask_app):
     flask_app.config['ERROR_404_HELP'] = settings.RESTPLUS_ERROR_404_HELP
 
 
-URL_PREFIX = '/api'
-apidoc.url_prefix = URL_PREFIX
+
 
 
 def initialize_app(flask_app):
