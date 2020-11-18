@@ -23,8 +23,7 @@ logging.config.fileConfig(logging_conf_path)
 log = logging.getLogger(__name__)
 app.config['MONGOALCHEMY_DATABASE'] = 'library'
 
-CORS(app, resources=r'/swaggerui/*')
-CORS(app, resources=r'/api/*')
+CORS(app, resources=r'/static/swagger.json')
 ### swagger specific ###
 
 SWAGGER_URL = '/api/docs'
@@ -38,7 +37,7 @@ apidoc = Apidoc(
 
 )
 api = Api(apidoc)
-URL_PREFIX = '/static/swagger.json'
+URL_PREFIX = '/static'
 apidoc.url_prefix = URL_PREFIX
 
 ### end swagger specific ###
