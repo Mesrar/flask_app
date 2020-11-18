@@ -60,18 +60,17 @@ def swagger_static(filename):
     return url_for("app_doc.static", filename='static_swagger/bower/swagger-ui/dist/{0}'.format(filename))
 
 
-@app.route('/api/swagger.json', methods=['GET'])
+@app.route('/swaggerui', methods=['GET'])
 def swagger():
-    
+    print("test", os.path.join(app.root_path, 'static/static_swagger/bower/swagger-ui/dist/'))
+
+    return render_template("swagger-ui.html", title=api.title, specs_url=api.specs_url)
+
+
+@app.route('/api/swagger.json', methods=['GET'])
+def index():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'swagger.json')
-
-
-@app.route('/', methods=['GET'])
-def index():
-
-    return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'static_swagger/bower/swagger-ui/dist/index.html')
 
 
 def configure_app(flask_app):
