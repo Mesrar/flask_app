@@ -16,7 +16,7 @@ import api.endpoints.imageapi as imageapi
 from flask_cors import CORS, cross_origin
 from flask_swagger_ui import get_swaggerui_blueprint
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static")
 
 logging_conf_path = os.path.normpath(os.path.join(app.root_path, 'logging.conf'))
 logging.config.fileConfig(logging_conf_path)
@@ -40,14 +40,13 @@ SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
 
 
 apidoc = Apidoc(
-    "restx_doc.static",
+    "app_doc",
     __name__,
-    template_folder="templates",
+    template_folder="static/templates",
     static_folder="static",
     static_url_path="/swaggerui",
 )
-
-
+api = Api(apidoc)
 
 
 @app.route('/favicon.ico', methods=['GET'])
@@ -56,21 +55,27 @@ def favicon():
                                mimetype='image/vnd.microsoft.icon')
 
 
-@app.route('/static/swagger.json', methods=['GET'])
+@apidoc.add_app_template_global
+def swagger_static(filename):
+    return url_for("app_doc.static", filename='static_swagger/bower/swagger-ui/dist/{0}'.format(filename))
+
+
+@app.route('/swaggerui', methods=['GET'])
 def swagger():
-    print("test")
-    return send_from_directory(os.path.join(app.root_path, 'static'), 'swagger.json')
-
-
-@app.route('/', methods=['GET'])
-def index():
-    api = Api(apidoc)
+    print("test", os.path.join(app.root_path, 'static/static_swagger/bower/swagger-ui/dist/'))
 
     return render_template("swagger-ui.html", title=api.title, specs_url=api.specs_url)
 
 
+@app.route('/', methods=['GET'])
+def index():
+
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'static_swagger/bower/swagger-ui/dist/index.html')
+
+
 def configure_app(flask_app):
-    # xflask_app.config['SERVER_NAME'] = settings.FLASK_SERVER_NAME
+    flask_app.config['SERVER_NAME'] = settings.FLASK_SERVER_NAME
     flask_app.config['flask_env'] = get_env()
     flask_app.config['SWAGGER_UI_DOC_EXPANSION'] = settings.RESTPLUS_SWAGGER_UI_DOC_EXPANSION
     flask_app.config['RESTPLUS_VALIDATE'] = settings.RESTPLUS_VALIDATE
@@ -83,12 +88,9 @@ apidoc.url_prefix = URL_PREFIX
 
 
 def initialize_app(flask_app):
-    configure_app(flask_app)
-    blueprint = SWAGGERUI_BLUEPRINT
-    api = Api(blueprint)
     api.add_namespace(plants_namespace)
     api.add_namespace(image_namespace)
-    flask_app.register_blueprint(blueprint)
+    flask_app.register_blueprint(apidoc)
     # plants.load_excel()
 
 
