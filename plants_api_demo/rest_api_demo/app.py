@@ -26,8 +26,8 @@ app.config['MONGOALCHEMY_DATABASE'] = 'library'
 CORS(app, resources=r'/swagger/*')
 
 ### swagger specific ###
-SWAGGER_URL = '/swagger'
-API_URL = '/static/swagger.json'
+SWAGGER_URL = '/api/docs'
+API_URL = 'http://petstore.swagger.io/v2/swagger.json'
 SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
     SWAGGER_URL,
     API_URL,
@@ -48,9 +48,6 @@ apidoc = Apidoc(
 )
 
 
-@app.before_request
-def log_request():
-    return None
 
 
 @app.route('/favicon.ico', methods=['GET'])
