@@ -15,8 +15,9 @@ import api.endpoints.plants as plants
 import api.endpoints.imageapi as imageapi
 from flask_cors import CORS, cross_origin
 from flask_swagger_ui import get_swaggerui_blueprint
+from flask_restx.apidoc import Apidoc
 
-app = Flask(__name__, static_folder="static")
+app = Flask(__name__, static_folder="static", template_folder="static/templates")
 
 logging_conf_path = os.path.normpath(os.path.join(app.root_path, 'logging.conf'))
 logging.config.fileConfig(logging_conf_path)
@@ -26,23 +27,21 @@ app.config['MONGOALCHEMY_DATABASE'] = 'library'
 CORS(app, resources=r'/static/swagger.json')
 ### swagger specific ###
 
-SWAGGER_URL = '/api/docs'
-API_URL = 'http://petstore.swagger.io/v2/swagger.json'
+SWAGGER_URL = '/api/doc/v1'
 apidoc = Apidoc(
     "app_doc",
     __name__,
     template_folder="static/templates",
     static_folder="static",
-    static_url_path="/api/doc",
+    static_url_path="/",
 
 )
 api = Api(apidoc)
-URL_PREFIX = '/static'
+URL_PREFIX = '/static/swagger.json'
 apidoc.url_prefix = URL_PREFIX
 
+
 ### end swagger specific ###
-
-
 
 
 @app.route('/favicon.ico', methods=['GET'])
@@ -51,14 +50,9 @@ def favicon():
                                mimetype='image/vnd.microsoft.icon')
 
 
-@apidoc.add_app_template_global
-def swagger_static(filename):
-    return url_for("app_doc.static", filename='static_swagger/bower/swagger-ui/dist/{0}'.format(filename))
-
-
-@app.route('/api/doc', methods=['GET'])
+@app.route('/api/doc/v1', methods=['GET'])
 def swagger():
-    return render_template("swagger-ui.html", title=api.title, specs_url=api.specs_url)
+    return render_template("swagger-ui.html", title=api.title, specs_url="/static/swagger.json")
 
 
 @app.route('/static/swagger.json', methods=['GET'])
@@ -76,13 +70,48 @@ def configure_app(flask_app):
     flask_app.config['ERROR_404_HELP'] = settings.RESTPLUS_ERROR_404_HELP
 
 
+def _register_apidoc(self, app: Flask) -> None:
+    conf = app.extensions.setdefault('restplus', {})
+    custom_apidoc = Apidoc('app_doc', __name__,
+                           template_folder="static/templates", static_folder='static',
+                           static_url_path="/")
 
+    @custom_apidoc.add_app_template_global
+    def swagger_static(filename: str) -> str:
+        return url_for("app_doc.static", filename='static_swagger/bower/swagger-ui/dist/{0}'.format(filename))
+
+    if not conf.get('apidoc_registered', False):
+        app.register_blueprint(custom_apidoc)
+    conf['apidoc_registered'] = True
+
+
+def api_patches(api_blueprint):
+    Api._register_apidoc = _register_apidoc
+
+    @property
+    def fix_specs_url(self):
+        return url_for(self.endpoint('specs'), _external=False)
+
+    Api.specs_url = fix_specs_url
+
+    api_fixed = Api(
+        api_blueprint,
+        title="le title",
+        description="le description",
+        version="0.1.0", doc="/doc/v1", )
+
+    return api_fixed
+
+
+api_blueprint = Blueprint('api', __name__,
+                          url_prefix="/static/swagger.json")
+api = api_patches(api_blueprint)
 
 
 def initialize_app(flask_app):
     api.add_namespace(plants_namespace)
     api.add_namespace(image_namespace)
-    flask_app.register_blueprint(apidoc)
+    app.register_blueprint(api_blueprint, url_prefix="/api/doc/v1")
     # plants.load_excel()
 
 
