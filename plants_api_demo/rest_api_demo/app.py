@@ -13,6 +13,8 @@ from api.endpoints.plants import ns as ns1
 from api.endpoints.imageapi import ns as ns2
 from werkzeug.middleware.proxy_fix import ProxyFix
 
+import api.endpoints.plants as plants
+
 app = Flask(__name__, static_folder="static", template_folder="static/templates")
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 logging_conf_path = os.path.normpath(os.path.join(app.root_path, 'logging.conf'))
@@ -45,6 +47,10 @@ def sawggerui():
                                'swagger.json')
 
 
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
+
 
 def configure_app(flask_app):
     flask_app.config['flask_env'] = get_env()
@@ -55,7 +61,7 @@ def configure_app(flask_app):
     flask_app.config['MONGOALCHEMY_DATABASE'] = 'library'
     flask_app.config["CACHE_TYPE"] = "null"
     flask_app.config["MONGO_URI"] = 'mongodb://' + os.environ['MONGODB_USERNAME'] + ':' + os.environ['MONGODB_PASSWORD'] \
-                + '@' + os.environ['MONGODB_HOSTNAME'] + ':27017/' + os.environ['MONGODB_DATABASE']
+                                    + '@' + os.environ['MONGODB_HOSTNAME'] + ':27017/' + os.environ['MONGODB_DATABASE']
 
 
 def initialize_app(flask_app):
@@ -63,8 +69,7 @@ def initialize_app(flask_app):
     api.add_namespace(ns2)
     configure_app(flask_app)
     flask_app.register_blueprint(api_blueprint, url_prefix="/api/doc/v1/")
-
-    # plants.load_excel()
+    plants.load_excel()
 
 
 def _register_apidoc(self, app: Flask) -> None:
@@ -100,10 +105,7 @@ def api_patches(api_blueprint):
     return api_fixed
 
 
-
 api = api_patches(api_blueprint)
 
 initialize_app(app)
 log.info('>>>>> Starting development server at http://{}/api/ <<<<<'.format(app.config['SERVER_NAME']))
-
-

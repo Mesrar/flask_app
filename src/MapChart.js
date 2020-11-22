@@ -60,7 +60,7 @@ const statesWithColors = allStates.map(state => ({
 }));
 
 const getData = (id) => {
-    fetch('/api/plants/'.concat(id)).then(res => res.json()).then(data => {
+    fetch('/api/doc/v1/plants/'.concat(id)).then(res => res.json()).then(data => {
 
         return Alert('Plant count :'.concat(JSON.stringify(data["abs_value"]).concat('\t')).
         concat("Percentage by State: ").concat(JSON.stringify(data["percent"])) , "State of :".concat(id));
