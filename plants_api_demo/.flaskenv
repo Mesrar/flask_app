@@ -1,2 +1,4 @@
 FLASK_APP=rest_api_demo/app.py
-FLASK_ENV=development
+FLASK_ENV=Production
+
+

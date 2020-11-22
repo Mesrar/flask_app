@@ -1,5 +1,5 @@
 import logging
-from flask import request, jsonify, Blueprint
+from flask import request, jsonify, Blueprint, current_app, has_app_context
 from flask_restx import Resource
 
 import pandas as pd
@@ -10,7 +10,13 @@ import matplotlib.pyplot as plt
 
 import json
 from flask_restx import Api
-from flask_restx.apidoc import apidoc
+import settings
+from flask_pymongo import PyMongo
+import os
+import app
+from gevent import monkey
+
+
 
 log = logging.getLogger(__name__)
 
@@ -20,13 +26,13 @@ api = Api(REQUEST_API)
 
 ns = api.namespace('image', description='Operations related plants')
 
-client = MongoClient(host='img_mongodb',
+client = MongoClient(host='db',
                      port=27017,
                      username='root',
                      password='pass',
                      authSource="admin")
 mydb = client['imgdb_notebooks']
-collection = mydb['img']
+collection = mydb['flaskdb']
 
 
 def get_blueprint():
@@ -43,9 +49,9 @@ def get_mpl_colormap(cmap_name):
 
 @ns.route('/load_img_to_db', methods=['GET'])
 class LoadImgTODB(Resource):
-
     def get(self):
-        data = np.genfromtxt('img.csv', delimiter=',', encoding=None, dtype=None)
+        monkey.patch_all()
+        data = np.genfromtxt(settings.CSV_IMG_DATA, delimiter=',', encoding=None, dtype=None)
 
         np_image = data[1:, 1:]
         depth = data[1:, 0]

@@ -1,0 +1,13 @@
+Metadata-Version: 1.1
+Name: plants-api-demo
+Version: 1.0.0
+Summary: plants for a RESTful API based on Flask-RESTPlus
+Home-page: https://github.com/postrational/rest_api_demo
+Author: MESRAR mohamed
+Author-email: UNKNOWN
+License: UNKNOWN
+Description: UNKNOWN
+Keywords: rest restful api flask swagger openapi flask-restplus
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Programming Language :: Python :: 3.8.5

@@ -34,7 +34,6 @@ class ApiPlants(metaclass=Singleton):
                            "cols": ["ORISPL", "PSTATABB", "PNAME", "LON", "LAT", 'PLNGENAN']}
 
     def __init__(self):
-        print("init")  # never prints
         self.df_plants = pd.read_excel(open(settings.EXCEL_DATA_EGRID_URI, 'rb'), sheet_name='PLNT16', header=1)
 
 

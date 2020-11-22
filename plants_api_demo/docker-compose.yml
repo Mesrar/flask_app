@@ -1,16 +1,26 @@
 version: '3.4'
 services:
-  web:
-    container_name: nginx
+  python_api:
+    container_name: flask_app
     build:
       context: .
-      dockerfile: DockerfileNginx
-    ports:
-      - "80:80"
-    command: nginx -g "daemon off";
-    depends_on:
-      - python_api
+      dockerfile: Dockerfile
+    environment:
+      APP_ENV: "prod"
+      APP_DEBUG: "False"
+      APP_PORT: 5000
+      MONGODB_DATABASE: flaskdb
+      MONGODB_USERNAME: root
+      MONGODB_PASSWORD: pass
+      MONGODB_HOSTNAME: mongodb
+    volumes:
+      - ./:/var/www
+    links:
       - db
+    networks: # <-- here
+      - nginx_network
+      - database1_network
+
   db:
     image: mongo:latest
     hostname: img_mongodb
@@ -19,15 +29,27 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=pass
     ports:
       - 27017:27017
-
-  python_api:
-    container_name: python
+    networks: # <-- connect to the bridge
+      - database1_network
+    volumes:
+      - ./mongo-volume:/data/db
+  web:
+    image: nginx:1.15
+    container_name: nginx
     build:
       context: .
-      dockerfile: Dockerfile
-    expose:
-      - "5000"
-    command: gunicorn -w 1 app:app -b :5000 --reload
-    links:
-      - db
+      dockerfile: DockerfileNginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./config/nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - python_api
+    networks: # <-- defin network
+      - nginx_network
 
+networks: # <-- and here
+  nginx_network:
+    driver: bridge
+  database1_network: # <-- add the bridge
+    driver: bridge

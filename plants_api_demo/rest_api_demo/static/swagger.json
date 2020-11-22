@@ -1,6 +1,6 @@
 {
   "swagger": "2.0",
-  "basePath": "/swagger",
+  "basePath": "/api/doc/v1",
   "paths": {
     "/image/": {
       "parameters": [
@@ -166,7 +166,7 @@
     },
     {
       "name": "image",
-      "description": "Operations related plants"
+      "description": "Operations related image"
     }
   ],
   "responses": {

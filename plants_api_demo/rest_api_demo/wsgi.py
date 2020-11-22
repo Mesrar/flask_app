@@ -1,4 +1,7 @@
-import app
+import app as app
 
-if __name__ == "__main__":
-    app.run()
+
+def create_app():
+
+    # log.info('>>>>> Starting development server at http://{}/api/ <<<<<'.format(app.config['SERVER_NAME']))
+    app.main()
